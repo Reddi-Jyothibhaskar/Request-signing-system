@@ -1,22 +1,31 @@
-import express from "express"
+import express from "express";
+import cors from "cors";
 import protectedRoutes from "./routes/protected.routes.js";
-// import cors from "cors";
 
 const app = express();
 
-// app.use(cors({
-//   origin: "http://localhost:3000",
-//   credentials: true
-// }));
+/**
+ * ✅ Enable CORS (Express 5 safe)
+ */
+app.use(cors({
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST"],
+  allowedHeaders: [
+    "Content-Type",
+    "X-Client-Id",
+    "X-Timestamp",
+    "X-Signature"
+  ]
+}));
 
-// Capture raw body
-app.use(
-  express.json({
-    verify: (req, res, buf) => {
-      req.rawBody = buf.toString();
-    },
-  })
-);
+/**
+ * ✅ Raw body capture
+ */
+app.use(express.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf.toString();
+  }
+}));
 
 app.use("/api", protectedRoutes);
 
